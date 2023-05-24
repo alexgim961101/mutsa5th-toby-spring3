@@ -6,10 +6,15 @@ import java.sql.*;
 
 public abstract class UserDao {
 
-    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+    // public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+    private SimpleConnectionMaker simpleConnectionMaker;
+
+    public UserDao() {
+        simpleConnectionMaker = new SimpleConnectionMaker();
+    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.getConnection();
 
         PreparedStatement ps = c.prepareStatement("insert into User(id, name, password) values(?, ?, ?)");
         ps.setString(1, user.getId());
@@ -23,7 +28,7 @@ public abstract class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.getConnection();
 
         PreparedStatement ps = c.prepareStatement("select * from User where id = ?");
         ps.setString(1, id);
